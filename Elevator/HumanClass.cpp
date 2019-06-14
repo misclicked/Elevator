@@ -13,6 +13,7 @@ void User::init(char nowFloor, char targetFloor)
 	this->targetFloor = targetFloor;
 	stayTime = rand() % 81 + 20;
 	arrivedTime = INT_MAX;
+	nowElevatorId = -1;
 	state = (targetFloor > nowFloor) ? UserState::WaitingUpside
 								     : UserState::WaitingDownSide;
 }

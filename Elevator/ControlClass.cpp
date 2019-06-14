@@ -31,8 +31,9 @@ void ControlClass::Initialize()
 	}
 }
 
-void ControlClass::StartSimulate(onHumanDestoryCallBack hdcb, onFloorChangedCallBack fccb, onElevatorBlockChangedCallBack efccb, onElevatorHumanChangedCallBack ehccb, int sleepTimems)
+void ControlClass::StartSimulate(onStatusChangedCallBack osc)
 {
+	this->pStatusChanged = osc;
 	int time = 0;
 	const int humanGenRate = 60; //humanGenRate(%)
 	std::queue<int> floorQuery;
@@ -153,6 +154,7 @@ void ControlClass::StartSimulate(onHumanDestoryCallBack hdcb, onFloorChangedCall
 			}
 		}
 		time++;
+		(*pStatusChanged)(this, time);
 		//Check Elvator in floor have target or 
 		std::this_thread::sleep_for(sync_period * 1ms); //sleep and wait till next cycle
 	}
