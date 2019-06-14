@@ -19,11 +19,7 @@ enum class ElevatorState {
 
 const int floor_per_block = 2;
 const int sync_period = 1000; //ms
-
-int GetRandomPatience()
-{
-	return rand() % 100 + 20; //°±¯d®É¶¡
-}
+const int floor_count = 12;
 
 template<typename Enum>
 Enum operator |(Enum lhs, Enum rhs)

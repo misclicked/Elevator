@@ -18,13 +18,12 @@ void ControlClass::Initialize()
 	for (int i = 0; i < 3; i++) {
 		elevators.push_back(Elevator(0));
 	}
-	floor.clear();
+	floors.clear();
 	for (int i = 0; i < 12; i++) {
 		std::vector<Human*> vec;
-		floor.push_back(vec);
+		floors.push_back(vec);
 	}
 }
-
 
 void ControlClass::StartSimulate(onHumanDestoryCallBack hdcb, onFloorChangedCallBack fccb, onElevatorBlockChangedCallBack efccb, onElevatorHumanChangedCallBack ehccb, int sleepTimems)
 {
@@ -33,6 +32,7 @@ void ControlClass::StartSimulate(onHumanDestoryCallBack hdcb, onFloorChangedCall
 	std::queue<int> floorQuery;
 	std::unordered_map<int, bool> floorQueryHandled;
 	while (true) {
+		//1樓產生新工作者
 		if (rand() % 100 > humanGenRate) {
 			int humanGenThisRound = rand() % 3;
 			std::cout << "Generate " << humanGenThisRound << " at Time:\t" << time << std::endl;
@@ -40,12 +40,21 @@ void ControlClass::StartSimulate(onHumanDestoryCallBack hdcb, onFloorChangedCall
 				Human h = Human(0, rand() % 12);
 				humans.insert(h);
 			}
-			
 		}
 
-		for (int i = 0; i < 12; i++) {	//Check floor for possible floor query
+		//現時間點檢查並產生2F~12F完成工作的人，此群人將希望到1F(80%)或到2F~12F(20%)
+		for (Human h:humans)
+			h.checkStayFinished(time);
 
+		for (int i = 0; i < floor_count; i++) {	//Check floor for possible floor query
+			for (Human* ph : floors[i]) {
+				auto state = ph->getState();
+
+			}
 		}
+
+		//Check Elvator in floor have target or 
+
 		std::this_thread::sleep_for(sync_period * 1ms); //sleep and wait till next cycle
 	}
 }

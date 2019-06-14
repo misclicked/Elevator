@@ -14,12 +14,11 @@ public:
 	Human(char nowFloor, char targetFloor);
 	void init(char nowFloor, char targetFloor);
 	void setOnElevator();
-	void setArrivedTime(int nowTime);
+	void setArriveTarget(int nowTime);
+	HumanState getState();
 	int getTargetFloor();
-	std::pair<HumanState, int> checkState(int nowTime);
+	std::pair<HumanState, int> checkStayFinished(int nowTime);
 	bool operator == (const Human& obj) const;
-	void setRamdomStayTime();
-	int getRandomTargetFloor();
 };
 
 namespace std
