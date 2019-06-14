@@ -87,5 +87,5 @@ bool Elevator::isFull()
 }
 int Elevator::userCount()
 {
-	return users.size();
+	return (int)users.size();
 }
