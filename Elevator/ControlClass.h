@@ -18,6 +18,7 @@ private:
 	onFloorChangedCallBack pFCCB; //once floor populance changed
 	onElevatorBlockChangedCallBack pEFCCB; //block changed
 	onElevatorHumanChangedCallBack pEHCCB; //once elavator populance changed
+
 public:
 	ControlClass();
 	void Initialize();

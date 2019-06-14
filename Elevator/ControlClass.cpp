@@ -3,7 +3,10 @@
 #include <iostream>
 #include <queue>
 #include <unordered_map>
+#include <thread>
+#include <chrono>
 
+using namespace std::chrono_literals;
 ControlClass::ControlClass()
 {
 	Initialize();
@@ -36,10 +39,13 @@ void ControlClass::StartSimulate(onHumanDestoryCallBack hdcb, onFloorChangedCall
 				Human h = Human(0, rand() % 12);
 				humans.insert(h);
 			}
+			
 		}
+
 		for (int i = 0; i < 12; i++) {	//Check floor for possible floor query
 
 		}
+		std::this_thread::sleep_for(sync_period * 1ms); //sleep and wait till next cycle
 	}
 }
 

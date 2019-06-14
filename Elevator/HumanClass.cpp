@@ -10,9 +10,11 @@ void Human::init(char nowFloor, char targetFloor)
 {
 	this->nowFloor = nowFloor;
 	this->targetFloor = targetFloor;
-	waitTime = INT_MAX;
+	stayTime = INT_MAX;
 	arrivedTime = INT_MAX;
-	state = HumanState::Waiting;
+	
+	state = (targetFloor > nowFloor) ? HumanState::WaitingUpside
+								     : HumanState::WaitingDownSide;
 }
 
 void Human::setOnElevator()
@@ -22,7 +24,7 @@ void Human::setOnElevator()
 
 void Human::setArrivedTime(int nowTime)
 {
-	waitTime = rand() % 81 + 20;
+	stayTime = rand() % 81 + 20;
 	arrivedTime = nowTime;
 	state = HumanState::Staying;
 	nowFloor = targetFloor;
@@ -35,9 +37,10 @@ int Human::getTargetFloor()
 
 std::pair<HumanState, int> Human::checkState(int nowTime)
 {
-	if (nowTime - arrivedTime >= waitTime) {
-		state = HumanState::Waiting;
+	if (nowTime - arrivedTime >= stayTime) {
 		targetFloor = rand() % 12 + 1;
+		state = (targetFloor > nowFloor) ? HumanState::WaitingUpside
+										 : HumanState::WaitingDownSide;
 	}
 	return { state, targetFloor };
 }
@@ -45,4 +48,10 @@ std::pair<HumanState, int> Human::checkState(int nowTime)
 bool Human::operator==(const Human& obj) const
 {
 	return obj.id == id;
+}
+
+
+int Human::getRandomTargetFloor()
+{
+	return 0;
 }

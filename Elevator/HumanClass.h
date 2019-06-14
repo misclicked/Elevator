@@ -4,9 +4,8 @@
 
 class Human {
 private:
-	int waitTime;
-	int patienceTime;
-	int arrivedTime;
+	int stayTime;    //how many time this human stay in paticular floor
+	int arrivedTime; 
 	char nowFloor;
 	char targetFloor;
 	HumanState state;
@@ -19,6 +18,8 @@ public:
 	int getTargetFloor();
 	std::pair<HumanState, int> checkState(int nowTime);
 	bool operator == (const Human& obj) const;
+	void setRamdomStayTime();
+	int getRandomTargetFloor();
 };
 
 namespace std

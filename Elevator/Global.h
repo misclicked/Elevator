@@ -1,9 +1,10 @@
 #pragma once
 
 enum class HumanState {
-	Waiting = 0,
-	Staying = 1,
-	OnElevator = 2,
+	WaitingUpside = 0,
+	WaitingDownSide = 1,
+	Staying = 2,
+	OnElevator = 3,
 };
 
 enum class ElevatorState {
@@ -15,12 +16,15 @@ enum class ElevatorState {
 	Upper = 16,
 	Lower = 32
 };
-static class Constant
-{
-public:
-	const int floor_per_block = 2;
 
-};
+const int floor_per_block = 2;
+const int sync_period = 1000; //ms
+
+int GetRandomPatience()
+{
+	return rand() % 100 + 20; //°±¯d®É¶¡
+}
+
 template<typename Enum>
 Enum operator |(Enum lhs, Enum rhs)
 {

@@ -22,4 +22,5 @@ public:
 	std::vector<int> UnLoad(int Floor);
 	void startWait(int Time);
 	int getFloor();
+	
 };
