@@ -7,15 +7,15 @@ Elevator::Elevator(int nowFloor)
 	targetFloor = 0;
 }
 
-ElevatorState Elevator::Load(int humanID, int targetFloor, HumanState humanState)
+bool Elevator::Load(int humanID, int targetFloor, HumanState humanState)
 {
 	if ((state & ElevatorState::Boarding) != ElevatorState::Boarding) {
 		state = ElevatorState::Boarding;
 		moveCount = 0;
 	}
-	if (humanState == HumanState::WaitingUpside && moveState == ElevatorMoveState::DownSide)return;
-	if (humanState == HumanState::WaitingDownSide && moveState == ElevatorMoveState::Upside)return;
-	if (state == ElevatorState::Full)return;
+	if (humanState == HumanState::WaitingUpside && moveState == ElevatorMoveState::DownSide)return true;
+	if (humanState == HumanState::WaitingDownSide && moveState == ElevatorMoveState::Upside)return true;
+	if (state == ElevatorState::Full)return false;
 	IDs.push_back({ humanID, targetFloor });
 	humanCount++;
 	moveCount++;
@@ -23,7 +23,7 @@ ElevatorState Elevator::Load(int humanID, int targetFloor, HumanState humanState
 		state = state ^ ElevatorState::Boarding;
 		state = state | ElevatorState::Full;
 	}
-	return state;
+	return state != ElevatorState::Full;
 }
 
 std::vector<int> Elevator::UnLoad(int Floor)

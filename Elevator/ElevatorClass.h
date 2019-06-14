@@ -19,7 +19,7 @@ private:
 	const int Capacity = 10;
 public:
 	Elevator(int nowFloor); 
-	ElevatorState Load(int humanID, int targetFloor, HumanState humanState);
+	bool Load(int humanID, int targetFloor, HumanState humanState);
 	std::vector<int> UnLoad(int Floor);
 	void startWait(int Time);
 	int getFloor();
