@@ -5,6 +5,7 @@
 class Human {
 private:
 	int waitTime;
+	int patienceTime;
 	int arrivedTime;
 	char nowFloor;
 	char targetFloor;

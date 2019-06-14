@@ -36,15 +36,15 @@ std::vector<int> Elevator::UnLoad(int Floor)
 	return unloaded;
 }
 
-int Elevator::getNowFloor()
-{
-	return nowFloor;
-}
-
 void Elevator::startWait(int Time)
 {
 	waitTime = std::ceil(moveCount * 0.7);
 	startWaitTime = Time;
 	state = state | ElevatorState::Waiting;
+}
+
+int Elevator::getFloor()
+{
+	return nowBlock / 2;
 }
 

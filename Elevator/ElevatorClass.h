@@ -8,6 +8,7 @@ class Elevator {
 private:
 	std::vector<std::pair<int, int> > IDs;
 	ElevatorState state;
+	int nowBlock;
 	int nowFloor;
 	int humanCount;
 	int moveCount;
@@ -19,6 +20,6 @@ public:
 	Elevator(int nowFloor); 
 	ElevatorState Load(int humanID, int targetFloor);
 	std::vector<int> UnLoad(int Floor);
-	int getNowFloor(); 
 	void startWait(int Time);
+	int getFloor();
 };

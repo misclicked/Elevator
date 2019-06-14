@@ -15,7 +15,12 @@ enum class ElevatorState {
 	Upper = 16,
 	Lower = 32
 };
+static class Constant
+{
+public:
+	const int floor_per_block = 2;
 
+};
 template<typename Enum>
 Enum operator |(Enum lhs, Enum rhs)
 {
