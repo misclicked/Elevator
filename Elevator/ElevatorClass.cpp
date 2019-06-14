@@ -25,9 +25,9 @@ bool Elevator::Load(User* human)
 			min_target = h->getTargetFloor();
 	}
 	if (getFloor() > max_target)
-		_targetFloor = min_target;//Only User Move Downward 
+		_targetFloor = (int)min_target;//Only User Move Downward 
 	else
-		_targetFloor = max_target;//Only User Move Upward
+		_targetFloor = (int)max_target;//Only User Move Upward
 	return true;
 }
 
