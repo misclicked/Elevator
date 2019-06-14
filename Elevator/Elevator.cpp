@@ -205,7 +205,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 		(int)(width * 0.01), (int)(height * 0.652), (int)(width * 0.05), (int)(height * 0.2), hWnd, (HMENU)200, hInstance, NULL);
 
 	hListView = CreateWindowEx(NULL, WC_LISTVIEW, L"", WS_CHILD | LVS_REPORT | WS_VISIBLE,
-		(int)(width * 0.08), (int)(height * 0.04), (int)(width * 0.85), (int)(height * 0.92), hWnd, NULL, hInstance, NULL);
+		(int)(width * 0.08), (int)(height * 0.04), (int)(width * 0.9), (int)(height * 0.92), hWnd, NULL, hInstance, NULL);
 
 	LVCOLUMN lvc;
 	// Initialize LVCOLUMN members that are common to all items.
@@ -226,7 +226,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	InsertColumn(2, width * 0.10, "Elevator A");
 	InsertColumn(3, width * 0.10, "Elevator B");
 	InsertColumn(4, width * 0.10, "Elevator C");
-	InsertColumn(5, width * 0.05, "Statistic");
+	InsertColumn(5, width * 0.10, "Statistic");
 
 	LVITEM lvI;
 	// Initialize LVITEM members that are common to all items.
@@ -234,9 +234,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	lvI.stateMask = 0;
 	lvI.state = 0;
 
-
-
-
+	// Fill floor column
 	lvI.iSubItem = 0;
 	for (int i = 0; i < 45; i++) {
 		lvI.iItem = i;
@@ -249,6 +247,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 		ListView_InsertItem(hListView, &lvI);
 	}
 
+	// Fill rest columns 1: Waiting Line 2: Elevator A 3: Elevator B 4: Elevator C
 	for (int i = 1; i < 5; i++) {
 		lvI.iSubItem = i;
 		for (int j = 0; j < 45; j++) {
@@ -258,6 +257,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 			ListView_SetItem(hListView, &lvI);
 		}
 	}
+
+	//Fill statistic column
+	lvI.iSubItem = 5;
+	auto SetStatisticItem = [&](auto id, auto text) {lvI.iItem = id; lvI.pszText = GetWC(text); ListView_SetItem(hListView, &lvI); };
+	SetStatisticItem(0, "Finished Run:");
+	SetStatisticItem(2, "Total Used Time:");
+	SetStatisticItem(4, "Wait Time Per User:");
+	SetStatisticItem(6, "Elevator A Through Put");
+	SetStatisticItem(8, "Elevator B Through Put");
+	SetStatisticItem(10, "Elevator C Through Put");
 
 	hHook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)BtnMsgProc, NULL, GetCurrentThreadId());
 
