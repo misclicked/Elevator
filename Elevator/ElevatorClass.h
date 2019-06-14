@@ -26,8 +26,8 @@ public:
 	const int& nowBlock = _nowBlock;
 	const int prefer_direction = _prefer_direction;
 	const ElevatorState& state = _state;
-	const double& floorf = (double)_nowBlock / (double)floor_per_block + 1;
-	const int floor = _nowBlock / floor_per_block + 1;
+	int getFloor() const;
+	double getFloorRF() const;
 	void setBroadStartTime(int time) { _boardStartTime = time; _boardedTime = 0; }
 	void setState(ElevatorState state_in) { _state = state_in; }
 	int direction(); // target_block - _nowBlock  ( > 0) ? MovingUpward : ? ( <0 ) MovingDownward (==0) Idle

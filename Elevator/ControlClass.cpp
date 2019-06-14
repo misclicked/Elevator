@@ -101,14 +101,14 @@ void ControlClass::StartSimulate(onStatusChangedCallBack osc)
 					elt.setState(ElevatorState::UnLoading);
 					continue;
 				}
-				if (floors_order[elt.floor].size() > 0)
+				if (floors_order[elt.getFloor()].size() > 0)
 				{
 					elt.setBroadStartTime(time);
 					elt.setState(ElevatorState::Loading);
 				}
 				//檢查上行是否存在新需求，若是Idle以往上乘客優先乘載
 				if (elt.prefer_direction >= 0)
-					for (int i = elt.floor + 1; i <= floor_count; ++i)
+					for (int i = elt.getFloor() + 1; i <= floor_count; ++i)
 						if (floors_order[i].size() > 0)
 						{
 							elt.setTarget(i);
@@ -118,7 +118,7 @@ void ControlClass::StartSimulate(onStatusChangedCallBack osc)
 
 				//檢查下行是否存在新需求
 				if (elt.prefer_direction < 0)
-				for (int i = elt.floor - 1; i >=1 ; --i)
+				for (int i = elt.getFloor() - 1; i >=1 ; --i)
 				{
 					if (floors_order[i].size() > 0)
 					{
@@ -143,9 +143,9 @@ void ControlClass::StartSimulate(onStatusChangedCallBack osc)
 				{
 					bool loaded = false;
 					if(!elt.isFull())
-						for(int load_id =0; load_id < floors[elt.floor].size(); ++load_id)
+						for(int load_id =0; load_id < floors[elt.getFloor()].size(); ++load_id)
 						{
-							if(elt.Load(floors[elt.floor][load_id++])) //找到指定方向可乘載人員
+							if(elt.Load(floors[elt.getFloor()][load_id++])) //找到指定方向可乘載人員
 								floors[i].erase(floors[i].begin() + load_id);
 						}
 					if(!loaded) //無人可以再乘坐電梯
@@ -175,12 +175,12 @@ int ControlClass::CheckNewOrder(Elevator* elt)
 {
 	//下行
 	if(elt->direction() < 0)
-		for (int i = elt->floor - 1; i >= 1; --i)
+		for (int i = elt->getFloor() - 1; i >= 1; --i)
 			if (floors_order[i].size() > 0)
 				return i;
 	//上行
 	if (elt->direction() > 0)
-		for (int i = elt->floor; i <= floor_count; ++i)
+		for (int i = elt->getFloor(); i <= floor_count; ++i)
 			if (floors_order[i].size() > 0)
 				return i;
 	return -1; // no new user
