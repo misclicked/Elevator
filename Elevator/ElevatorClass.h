@@ -10,7 +10,7 @@ class Elevator {
 private:
 	struct PointedObjEq {
 		bool operator () (User const* lhs, User const* rhs) const {
-			return lhs->id > rhs->id;
+			return lhs->id == rhs->id;
 		}
 	};
 	struct PointedObjHash {
@@ -29,8 +29,8 @@ private:
 	int _id;
 public:
 	Elevator(int id,int nowBlock);
-	bool Load(User*& user);
-	bool Unload(User*& user, int now_time);
+	bool Load(User* user);
+	bool Unload(User* user, int now_time);
 	void setTarget(int target);
 	int getBoardedTime() { return _boardedTime; } // time that users have boarded
 	int getBoardStartTime() { return _boardStartTime; }

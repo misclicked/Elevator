@@ -77,12 +77,15 @@ void onStatusChanged(void* sender, int time) {
 		ElevatorText[i].clear();
 		ElevatorText[i].resize(24);
 	}
-	for (User user : Simulator->AllUsers) {
-		if (user.NowElevatorId < 0) {
-			WaitingText[user.NowFloor].push_back(IntToFloor(user.getTargetFloor())[0]);
+	ElevatorText[0][Simulator->GetElevatorByID(0)->getNowBlock()].push_back('W');
+	ElevatorText[1][Simulator->GetElevatorByID(1)->getNowBlock()].push_back('W');
+	ElevatorText[2][Simulator->GetElevatorByID(2)->getNowBlock()].push_back('W');
+	for (User* user : Simulator->getAllUsers()) {
+		if (user->NowElevatorId < 0) {
+			WaitingText[user->NowFloor].push_back(IntToFloor(user->getTargetFloor())[0]);
 		}
 		else {
-			ElevatorText[user.NowElevatorId][Simulator->GetElevatorByID(user.NowElevatorId)->getNowBlock()].push_back(IntToFloor(user.getTargetFloor())[0]);
+			ElevatorText[user->NowElevatorId][Simulator->GetElevatorByID(user->NowElevatorId)->getNowBlock()].push_back(IntToFloor(user->getTargetFloor())[0]);
 		}
 	}
 	for (int i = 1; i <= 12; i++) {

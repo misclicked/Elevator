@@ -11,7 +11,7 @@ Elevator::Elevator(int id,int nowFloor)
 	_prefer_direction = 0;
 }
 
-bool Elevator::Load(User*& user)
+bool Elevator::Load(User* user)
 {
 	if (_prefer_direction != 0) // 使用者方向與電梯遵循方向不符
 		if ((user->getTargetFloor() > getFloor() && _prefer_direction < 0) ||
@@ -52,7 +52,7 @@ double Elevator::getFloorRF() const
 
 int Elevator::direction()
 {
-	return _targetFloor - _nowBlock;
+	return _targetFloor - getFloor();
 }
 
 ///按照方向執行移動一次: 若是未移動則回傳false
@@ -72,11 +72,11 @@ bool Elevator::MoveOnce()
 User* Elevator::HaveUnloadableUser()
 {
 	for (User* user : users)
-		if (user->getTargetFloor() == _nowBlock / floor_per_block)
+		if (user->getTargetFloor() == getFloorRF())
 			return user;
 	return nullptr;
 }
-bool Elevator::Unload(User*& user, int now_time)
+bool Elevator::Unload(User* user, int now_time)
 {
 	if (users.count(user) > 0 && user->getTargetFloor() == getFloor()) {
 		user->setArriveTarget(now_time);
