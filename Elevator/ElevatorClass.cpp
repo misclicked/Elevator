@@ -7,15 +7,21 @@ Elevator::Elevator(int nowFloor)
 	_boardStartTime = 0;
 	_nowBlock = nowFloor / 2;
 	_targetFloor = target_null;
+	_prefer_direction = 0;
 }
 
-bool Elevator::Load(User* human)
+bool Elevator::Load(User* user)
 {
-	if (isFull())
+	if (_prefer_direction != 0) // 使用者方向與電梯遵循方向不符
+		if ((user->getTargetFloor() > floor && _prefer_direction < 0) ||
+			(user->getTargetFloor() < floor && _prefer_direction > 0))
+			return false;
+	if (isFull()) //滿員
 		return false;
+
 	_boardedTime += board_speed;
-	users.insert(human);
-	double min_target = floor_count;
+	users.insert(user);
+	double min_target = floor_count + 1.0;
 	double max_target = -1.0;
 	for (auto h : users)
 	{
@@ -24,10 +30,12 @@ bool Elevator::Load(User* human)
 		if ((h->getTargetFloor()) < min_target)
 			min_target = h->getTargetFloor();
 	}
-	if (getFloor() > max_target)
-		_targetFloor = min_target;//Only User Move Downward 
+	if (floorf > max_target)
+		_targetFloor = max_target;//Only Have Users: Move Downward 
 	else
-		_targetFloor = max_target;//Only User Move Upward
+		_targetFloor = min_target;//Only Have Users: Move Upward
+
+	_prefer_direction = _targetFloor - floor;
 	return true;
 }
 
@@ -49,21 +57,30 @@ bool Elevator::MoveOnce()
 		return false;
 	return true;
 }
-bool Elevator::Unload(User* human, int now_time)
+
+User* Elevator::HaveUnloadableUser()
 {
-	if (users.count(human) > 0) {
-		human->setArriveTarget(now_time);
-		users.erase(human);
+	for (User* user : users)
+		if (user->getTargetFloor() == _nowBlock / floor_per_block)
+			return user;
+	return nullptr;
+}
+bool Elevator::Unload(User* user, int now_time)
+{
+	if (users.count(user) > 0 && user->getTargetFloor() == floor) {
+		user->setArriveTarget(now_time);
+		users.erase(user);
 		return true;
 	}
+	if (users.size() == 0)
+		_prefer_direction = 0;
 	return false;
 }
-
-double Elevator::getFloor()
+void Elevator::setTarget(int target)
 {
-	return _nowBlock / 2.0;
+	_prefer_direction = _targetFloor - floor;
+	_targetFloor = target;
 }
-
 bool Elevator::isFull()
 {
 	return userCount() == Capacity;

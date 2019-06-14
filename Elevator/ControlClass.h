@@ -24,6 +24,7 @@ public:
 	ControlClass();
 	void Initialize();
 	void StartSimulate(onHumanDestoryCallBack, onFloorChangedCallBack, onElevatorBlockChangedCallBack, onElevatorHumanChangedCallBack, int sleepTimems);
+	int CheckNewOrder(Elevator* elt);
 	User* GetHumanByID(int id);
 	Elevator* GetElevatorByID(int id);
 	std::vector<User*> GetFloorByID(int id);
