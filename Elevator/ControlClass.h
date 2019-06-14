@@ -9,14 +9,14 @@ class ControlClass
 {
 private:
 	typedef void (*onStatusChangedCallBack)(void*, int); //self, time
-	std::unordered_set<User> humans;
+	std::unordered_set<User> allUsers;
 	std::vector<Elevator> elevators;
 	std::vector<std::deque<User*> > floors;
 	onStatusChangedCallBack pStatusChanged; //on time chnaged
 	std::vector<std::vector<int>> floors_order;
 public:
 	ControlClass();
-	const std::unordered_set<User>& Humans = humans;
+	const std::unordered_set<User>& AllUsers = allUsers;
 	void Initialize();
 	void StartSimulate(onStatusChangedCallBack);
 	int CheckNewOrder(Elevator* elt);

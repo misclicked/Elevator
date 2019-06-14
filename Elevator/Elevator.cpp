@@ -69,7 +69,7 @@ void setWaitingText(int floor, const char* text) {
 // Main CallBack
 void onStatusChanged(void* sender, int time) {
 	ControlClass* Simulator = static_cast<ControlClass*>(sender);
-	for (User user : Simulator->Humans) {
+	for (User user : Simulator->AllUsers) {
 		if (user.NowElevatorId < 0) {
 			setWaitingText(user.NowFloor, "1");
 		}
