@@ -5,9 +5,20 @@
 #include "HumanClass.h"
 #include "Global.h"
 
+
 class Elevator {
 private:
-	std::unordered_set< User*> users;
+	struct PointedObjEq {
+		bool operator () (User const* lhs, User const* rhs) const {
+			return lhs->id > rhs->id;
+		}
+	};
+	struct PointedObjHash {
+		int operator () (User const* user) const {
+			return user->id;
+		}
+	};
+	std::unordered_set< User*, PointedObjHash, PointedObjEq> users;
 	ElevatorState _state;
 	int _nowBlock;
 	int _targetFloor;
@@ -18,14 +29,14 @@ private:
 	int _id;
 public:
 	Elevator(int id,int nowBlock);
-	bool Load(User* user);
-	bool Unload(User* user, int now_time);
+	bool Load(User*& user);
+	bool Unload(User*& user, int now_time);
 	void setTarget(int target);
-	const double& boardedTime = _boardedTime; // time that users have boarded
-	const int& boardStartTime = _boardStartTime;
-	const int& nowBlock = _nowBlock;
-	const int prefer_direction = _prefer_direction;
-	const ElevatorState& state = _state;
+	int getBoardedTime() { return _boardedTime; } // time that users have boarded
+	int getBoardStartTime() { return _boardStartTime; }
+	int getNowBlock() { return _nowBlock; }
+	int getPreferDirection() { return _prefer_direction; }
+	ElevatorState getElevatorState() { return _state; };
 	int getFloor() const;
 	double getFloorRF() const;
 	void setBroadStartTime(int time) { _boardStartTime = time; _boardedTime = 0; }

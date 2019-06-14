@@ -11,7 +11,7 @@ Elevator::Elevator(int id,int nowFloor)
 	_prefer_direction = 0;
 }
 
-bool Elevator::Load(User* user)
+bool Elevator::Load(User*& user)
 {
 	if (_prefer_direction != 0) // 使用者方向與電梯遵循方向不符
 		if ((user->getTargetFloor() > getFloor() && _prefer_direction < 0) ||
@@ -76,7 +76,7 @@ User* Elevator::HaveUnloadableUser()
 			return user;
 	return nullptr;
 }
-bool Elevator::Unload(User* user, int now_time)
+bool Elevator::Unload(User*& user, int now_time)
 {
 	if (users.count(user) > 0 && user->getTargetFloor() == getFloor()) {
 		user->setArriveTarget(now_time);

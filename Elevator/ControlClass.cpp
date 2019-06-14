@@ -67,32 +67,15 @@ void ControlClass::StartSimulate(onStatusChangedCallBack osc)
 		for (User h : allUsers)
 			h.checkStayFinished(time);
 
-		int NewOrderCount = 0;
-		//產生目標樓層需求表
-		for (int i = 1; i <= floor_count; i++)
-		{	//Check floor for possible floor query
-			bool have_order = false;
-			floors_order[i].clear();
-			for (User* ph : floors[i]) {
-				auto state = ph->getState();
-				if (state == UserState::WaitingUpside ||
-					state == UserState::WaitingDownSide) //有人想搭電梯
-				{
-					have_order = true;
-					floors_order[i].push_back(ph->getTargetFloor());
-				}
-			}
-			if (have_order)
-				NewOrderCount++;
-		}
+		int NewOrderCount = ResetOrder();
 		//命令: 執行1次時間單位之電梯移動
-		for (Elevator elt : elevators)
+		for (Elevator& elt : elevators)
 		{
 			if (NewOrderCount == 0) //沒有人要搭電梯 
 				break;
 			//若電梯進出中此次時間內可進出的人數
-			int LoadCount = (int)((((double)elt.boardStartTime - time) - elt.boardedTime) / board_speed);
-			switch (elt.state)
+			int LoadCount = (int)(((time - (double)elt.getBoardStartTime()) - elt.getBoardedTime()) / board_speed);
+			switch (elt.getElevatorState())
 			{
 			case ElevatorState::Idle:
 				if (elt.HaveUnloadableUser() != nullptr)
@@ -101,13 +84,14 @@ void ControlClass::StartSimulate(onStatusChangedCallBack osc)
 					elt.setState(ElevatorState::UnLoading);
 					continue;
 				}
-				if (floors_order[elt.getFloor()].size() > 0)
+				if (floors_order[elt.getFloor()].size() > 0 && !elt.isFull())
 				{
 					elt.setBroadStartTime(time);
 					elt.setState(ElevatorState::Loading);
+					continue;
 				}
 				//檢查上行是否存在新需求，若是Idle以往上乘客優先乘載
-				if (elt.prefer_direction >= 0)
+				if (elt.getPreferDirection() >= 0)
 					for (int i = elt.getFloor() + 1; i <= floor_count; ++i)
 						if (floors_order[i].size() > 0)
 						{
@@ -117,7 +101,7 @@ void ControlClass::StartSimulate(onStatusChangedCallBack osc)
 						}
 
 				//檢查下行是否存在新需求
-				if (elt.prefer_direction < 0)
+				if (elt.getPreferDirection() < 0)
 				for (int i = elt.getFloor() - 1; i >=1 ; --i)
 				{
 					if (floors_order[i].size() > 0)
@@ -141,12 +125,16 @@ void ControlClass::StartSimulate(onStatusChangedCallBack osc)
 				//此單位時間可載人數
 				for (int i = 0; i < LoadCount; ++i)
 				{
+					int floor_id = elt.getFloor();
 					bool loaded = false;
 					if(!elt.isFull())
-						for(int load_id =0; load_id < floors[elt.getFloor()].size(); ++load_id)
+						for(int load_id =0; load_id < floors[floor_id].size(); ++load_id)
 						{
-							if(elt.Load(floors[elt.getFloor()][load_id++])) //找到指定方向可乘載人員
-								floors[i].erase(floors[i].begin() + load_id);
+							if (elt.Load(floors[floor_id][load_id])) //找到指定方向可乘載人員
+							{
+								floors[floor_id].erase(floors[floor_id].begin() + load_id);
+								NewOrderCount = ResetOrder();
+							}
 						}
 					if(!loaded) //無人可以再乘坐電梯
 						elt.setState(ElevatorState::Idle);
@@ -171,6 +159,28 @@ void ControlClass::StartSimulate(onStatusChangedCallBack osc)
 		std::this_thread::sleep_for(sync_period * 1ms); //sleep and wait till next cycle
 	}
 }
+int ControlClass::ResetOrder()
+{
+	int count = 0;
+	//產生目標樓層需求表
+	for (int i = 1; i <= floor_count; i++)
+	{	//Check floor for possible floor query
+		bool have_order = false;
+		floors_order[i].clear();
+		for (User*& ph : floors[i]) {
+			auto state = ph->getState();
+			if (state == UserState::WaitingUpside ||
+				state == UserState::WaitingDownSide) //有人想搭電梯
+			{
+				have_order = true;
+				floors_order[i].push_back(ph->getTargetFloor());
+			}
+		}
+		if (have_order)
+			count++;
+	}
+	return count;
+}
 int ControlClass::CheckNewOrder(Elevator* elt)
 {
 	//下行
@@ -192,7 +202,7 @@ User* ControlClass::GetHumanByID(int id)
 
 Elevator* ControlClass::GetElevatorByID(int id)
 {
-	return nullptr;
+	return &elevators[id];
 }
 
 std::vector<User*> ControlClass::GetFloorByID(int id)

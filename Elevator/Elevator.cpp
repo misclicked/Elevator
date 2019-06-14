@@ -82,7 +82,7 @@ void onStatusChanged(void* sender, int time) {
 			WaitingText[user.NowFloor].push_back(IntToFloor(user.getTargetFloor())[0]);
 		}
 		else {
-			ElevatorText[user.NowElevatorId][Simulator->GetElevatorByID(user.NowElevatorId)->nowBlock].push_back(IntToFloor(user.getTargetFloor())[0]);
+			ElevatorText[user.NowElevatorId][Simulator->GetElevatorByID(user.NowElevatorId)->getNowBlock()].push_back(IntToFloor(user.getTargetFloor())[0]);
 		}
 	}
 	for (int i = 1; i <= 12; i++) {

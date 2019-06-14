@@ -21,7 +21,7 @@ enum class ElevatorMoveState {
 };
 
 const int floor_per_block = 2;
-const int sync_period = 1000; //ms(real time)
+const int sync_period = 100; //ms(real time)
 const int floor_count = 12;   
 const double board_speed = 0.7;//time
 const int target_null = -1;

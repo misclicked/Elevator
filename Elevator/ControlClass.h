@@ -19,6 +19,7 @@ public:
 	const std::unordered_set<User>& AllUsers = allUsers;
 	void Initialize();
 	void StartSimulate(onStatusChangedCallBack);
+	int ResetOrder();
 	int CheckNewOrder(Elevator* elt);
 	User* GetHumanByID(int id);
 	Elevator* GetElevatorByID(int id);
