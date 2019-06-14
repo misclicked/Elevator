@@ -7,12 +7,15 @@ Elevator::Elevator(int nowFloor)
 	targetFloor = 0;
 }
 
-ElevatorState Elevator::Load(int humanID, int targetFloor)
+ElevatorState Elevator::Load(int humanID, int targetFloor, HumanState humanState)
 {
 	if ((state & ElevatorState::Boarding) != ElevatorState::Boarding) {
 		state = ElevatorState::Boarding;
 		moveCount = 0;
 	}
+	if (humanState == HumanState::WaitingUpside && moveState == ElevatorMoveState::DownSide)return;
+	if (humanState == HumanState::WaitingDownSide && moveState == ElevatorMoveState::Upside)return;
+	if (state == ElevatorState::Full)return;
 	IDs.push_back({ humanID, targetFloor });
 	humanCount++;
 	moveCount++;

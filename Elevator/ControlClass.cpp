@@ -16,7 +16,7 @@ void ControlClass::Initialize()
 {
 	elevators.clear();
 	for (int i = 0; i < 3; i++) {
-		elevators.push_back(Elevator(0));
+		elevators.push_back(Elevator(1));
 	}
 	floors.clear();
 	for (int i = 0; i < 12; i++) {
@@ -37,7 +37,7 @@ void ControlClass::StartSimulate(onHumanDestoryCallBack hdcb, onFloorChangedCall
 			int humanGenThisRound = rand() % 3;
 			std::cout << "Generate " << humanGenThisRound << " at Time:\t" << time << std::endl;
 			for (int i = 0; i < humanGenThisRound; i++) {
-				Human h = Human(0, rand() % 12);
+				Human h = Human(1, rand() % 11 + 2);
 				humans.insert(h);
 			}
 		}

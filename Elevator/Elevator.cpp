@@ -3,6 +3,9 @@
 
 #include "framework.h"
 #include "Elevator.h"
+#include <iostream>
+
+using namespace std;
 
 #define MAX_LOADSTRING 100
 
@@ -10,6 +13,8 @@
 HINSTANCE hInst;                                // 目前執行個體
 WCHAR szTitle[MAX_LOADSTRING];                  // 標題列文字
 WCHAR szWindowClass[MAX_LOADSTRING];            // 主視窗類別名稱
+HWND hBtnSim, hBtnSimParent;
+HHOOK hHook;
 
 // 這個程式碼模組所包含之函式的向前宣告:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -17,6 +22,22 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
+LRESULT CALLBACK BtnMsgProc(int iCode, WPARAM wParam, LPARAM lParam)
+{
+	if ((iCode == HC_ACTION) && (wParam == PM_REMOVE))
+	{
+		MSG* msg = reinterpret_cast<MSG*>(lParam);
+		if ((msg->hwnd == hBtnSimParent) &&
+			(msg->message == WM_COMMAND) &&
+			(HIWORD(msg->wParam) == BN_CLICKED) &&
+			(reinterpret_cast<HWND>(msg->lParam) == hBtnSim))
+		{
+			cout << "hehe" << endl;
+		}
+	}
+
+	return CallNextHookEx(hHook, iCode, wParam, lParam);
+}
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
@@ -26,7 +47,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     // TODO: 在此放置程式碼。
+	// Simulater Start Button
 
+	
     // 將全域字串初始化
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_ELEVATOR, szWindowClass, MAX_LOADSTRING);
@@ -100,6 +123,12 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
+   hBtnSimParent = hWnd;
+   hBtnSim = CreateWindowEx(NULL, L"button", L"TEXT", WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_DEFPUSHBUTTON,
+	   50, 50, 500, 500, hWnd, (HMENU)200, hInstance, NULL);
+
+   hHook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)BtnMsgProc, NULL, GetCurrentThreadId());
+
    if (!hWnd)
    {
       return FALSE;
@@ -135,6 +164,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
             case IDM_EXIT:
+				UnhookWindowsHookEx(hHook);
                 DestroyWindow(hWnd);
                 break;
             default:
