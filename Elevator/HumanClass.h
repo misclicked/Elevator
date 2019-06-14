@@ -13,6 +13,8 @@ private:
 public:
 	int id;
 	User(char nowFloor, char targetFloor);
+	const int& NowFloor = nowFloor;
+	const int& NowElevatorId = nowElevatorId;
 	void init(char nowFloor, char targetFloor);
 	void setOnElevator(int ele_id);
 	void setArriveTarget(int nowTime);

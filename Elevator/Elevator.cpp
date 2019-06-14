@@ -7,6 +7,9 @@
 #include <iostream>
 #include <CommCtrl.h>
 #include <string>
+#include "ControlClass.h"
+#include <thread>
+
 
 using namespace std;
 
@@ -19,6 +22,7 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // 主視窗類別名稱
 HWND hBtnSim, hBtnAddProp, hBtnKillProp, hBtnResetElevator;		//按鈕
 HWND hListView;			//ListViews										
 HHOOK hHook;
+ControlClass Simulator;
 
 // 這個程式碼模組所包含之函式的向前宣告:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -62,6 +66,19 @@ void setWaitingText(int floor, const char* text) {
 	setText(1, 44 - (floor - 1) * 4, text);
 }
 
+// Main CallBack
+void onStatusChanged(void* sender, int time) {
+	ControlClass* Simulator = static_cast<ControlClass*>(sender);
+	for (User user : Simulator->AllUsers) {
+		if (user.NowElevatorId < 0) {
+			setWaitingText(user.NowFloor, "1");
+		}
+		else {
+			setElevatorText(user.NowElevatorId, Simulator->GetElevatorByID(user.NowElevatorId)->nowBlock/2, "1");
+		}
+	}
+}
+
 // Button CallBack
 
 LRESULT CALLBACK BtnMsgProc(int iCode, WPARAM wParam, LPARAM lParam)
@@ -75,6 +92,8 @@ LRESULT CALLBACK BtnMsgProc(int iCode, WPARAM wParam, LPARAM lParam)
 			ShowWindow(hBtnKillProp, SW_SHOW);
 			ShowWindow(hBtnResetElevator, SW_SHOW);
 			//MessageBox(0, L"And text here", L"MessageBox caption", MB_OK);
+			thread t([&]() {Simulator.StartSimulate(onStatusChanged); });
+			t.detach();
 			break;
 		}
 	}

@@ -8,22 +8,17 @@
 class ControlClass
 {
 private:
-	typedef void (*onHumanDestoryCallBack)(void*, int); //self, humanID
-	typedef void (*onFloorChangedCallBack)(void*, int); //self, floorID
-	typedef void (*onElevatorBlockChangedCallBack)(void*, int); //self, elevatorID
-	typedef void (*onElevatorHumanChangedCallBack)(void*, int); //self, elevatorID
+	typedef void (*onStatusChangedCallBack)(void*, int); //self, time
 	std::unordered_set<User> allUsers;
 	std::vector<Elevator> elevators;
 	std::vector<std::deque<User*> > floors;
-	onHumanDestoryCallBack pHDCB; //once human fulfill target
-	onFloorChangedCallBack pFCCB; //once floor populance changed
-	onElevatorBlockChangedCallBack pEFCCB; //block changed
-	onElevatorHumanChangedCallBack pEHCCB; //once elavator populance changed
+	onStatusChangedCallBack pStatusChanged; //on time chnaged
 	std::vector<std::vector<int>> floors_order;
 public:
 	ControlClass();
+	const std::unordered_set<User>& AllUsers = allUsers;
 	void Initialize();
-	void StartSimulate(onHumanDestoryCallBack, onFloorChangedCallBack, onElevatorBlockChangedCallBack, onElevatorHumanChangedCallBack, int sleepTimems);
+	void StartSimulate(onStatusChangedCallBack);
 	int CheckNewOrder(Elevator* elt);
 	User* GetHumanByID(int id);
 	Elevator* GetElevatorByID(int id);
