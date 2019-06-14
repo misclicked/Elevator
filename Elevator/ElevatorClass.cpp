@@ -41,7 +41,7 @@ std::vector<int> Elevator::UnLoad(int Floor)
 
 void Elevator::startWait(int Time)
 {
-	waitTime = std::ceil(moveCount * 0.7);
+	waitTime = (int)std::ceil(moveCount * 0.7);
 	startWaitTime = Time;
 	state = state | ElevatorState::Waiting;
 }

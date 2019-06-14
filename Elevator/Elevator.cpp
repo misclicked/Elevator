@@ -178,34 +178,33 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	int height = windowArea.bottom - windowArea.top;
 
 	hBtnSim = CreateWindowEx(NULL, L"button", L"Start", WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_DEFPUSHBUTTON,
-		width * 0.01, height * 0.04, width * 0.05, height * 0.92, hWnd, (HMENU)200, hInstance, NULL);
+		(int)(width * 0.01), (int)(height * 0.04), (int)(width * 0.05), (int)(height * 0.92), hWnd, (HMENU)200, hInstance, NULL);
 
 	hBtnAddProp = CreateWindowEx(NULL, L"button", L"Add prop", WS_CHILD | WS_TABSTOP | BS_DEFPUSHBUTTON,
-		width * 0.01, height * 0.04, width * 0.05, height * 0.2, hWnd, (HMENU)200, hInstance, NULL);
+		(int)(width * 0.01), (int)(height * 0.04), (int)(width * 0.05), (int)(height * 0.2), hWnd, (HMENU)200, hInstance, NULL);
 
 	hBtnKillProp = CreateWindowEx(NULL, L"button", L"Kill prop", WS_CHILD | WS_TABSTOP | BS_DEFPUSHBUTTON,
-		width * 0.01, height * 0.346, width * 0.05, height * 0.2, hWnd, (HMENU)200, hInstance, NULL);
+		(int)(width * 0.01), (int)(height * 0.346), (int)(width * 0.05), (int)(height * 0.2), hWnd, (HMENU)200, hInstance, NULL);
 
 	hBtnResetElevator = CreateWindowEx(NULL, L"button", L"Reset", WS_CHILD | WS_TABSTOP | BS_DEFPUSHBUTTON,
-		width * 0.01, height * 0.652, width * 0.05, height * 0.2, hWnd, (HMENU)200, hInstance, NULL);
+		(int)(width * 0.01), (int)(height * 0.652), (int)(width * 0.05), (int)(height * 0.2), hWnd, (HMENU)200, hInstance, NULL);
 
 	hListViewFloor = CreateWindowEx(NULL, WC_LISTVIEW, L"", WS_CHILD | LVS_REPORT | WS_VISIBLE,
-		width * 0.08, height * 0.04, width * 0.85, height * 0.92, hWnd, NULL, hInstance, NULL);
+		(int)(width * 0.08), (int)(height * 0.04), (int)(width * 0.85), (int)(height * 0.92), hWnd, NULL, hInstance, NULL);
 
-	WCHAR szText[256];     // Temporary buffer.
 	LVCOLUMN lvc;
 	lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 
 	lvc.iSubItem = 0;
 	lvc.pszText = GetWC("F");
-	lvc.cx = width * 0.02;               // Width of column in pixels.
+	lvc.cx = int(width * 0.02);               // Width of column in pixels.
 
 	lvc.fmt = LVCFMT_LEFT;  // Left-aligned column.
 	ListView_InsertColumn(hListViewFloor, 0, &lvc);
 
 	lvc.iSubItem = 1;
 	lvc.pszText = GetWC("Waiting");
-	lvc.cx = width * 0.48;               // Width of column in pixels.
+	lvc.cx = int(width * 0.48);               // Width of column in pixels.
 
 	lvc.fmt = LVCFMT_LEFT;  // Left-aligned column.
 	ListView_InsertColumn(hListViewFloor, 1, &lvc);
@@ -213,28 +212,28 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 	lvc.iSubItem = 2;
 	lvc.pszText = GetWC("Elevator A");
-	lvc.cx = width * 0.10;               // Width of column in pixels.
+	lvc.cx = int(width * 0.10);               // Width of column in pixels.
 
 	lvc.fmt = LVCFMT_LEFT;  // Left-aligned column.
 	ListView_InsertColumn(hListViewFloor, 2, &lvc);
 
 	lvc.iSubItem = 3;
 	lvc.pszText = GetWC("Elevator B");
-	lvc.cx = width * 0.10;               // Width of column in pixels.
+	lvc.cx = int(width * 0.10);               // Width of column in pixels.
 
 	lvc.fmt = LVCFMT_LEFT;  // Left-aligned column.
 	ListView_InsertColumn(hListViewFloor, 3, &lvc);
 
 	lvc.iSubItem = 4;
 	lvc.pszText = GetWC("Elevator C");
-	lvc.cx = width * 0.10;               // Width of column in pixels.
+	lvc.cx = int(width * 0.10);               // Width of column in pixels.
 
 	lvc.fmt = LVCFMT_LEFT;  // Left-aligned column.
 	ListView_InsertColumn(hListViewFloor, 4, &lvc);
 
 	lvc.iSubItem = 5;
 	lvc.pszText = GetWC("Statistic");
-	lvc.cx = width * 0.05;               // Width of column in pixels.
+	lvc.cx = int(width * 0.05);               // Width of column in pixels.
 
 	lvc.fmt = LVCFMT_LEFT;  // Left-aligned column.
 	ListView_InsertColumn(hListViewFloor, 5, &lvc);
