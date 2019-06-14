@@ -12,7 +12,7 @@ private:
 	typedef void (*onFloorChangedCallBack)(void*, int); //self, floorID
 	typedef void (*onElevatorBlockChangedCallBack)(void*, int); //self, elevatorID
 	typedef void (*onElevatorHumanChangedCallBack)(void*, int); //self, elevatorID
-	std::unordered_set<User> humans;
+	std::unordered_set<User> allUsers;
 	std::vector<Elevator> elevators;
 	std::vector<std::deque<User*> > floors;
 	onHumanDestoryCallBack pHDCB; //once human fulfill target

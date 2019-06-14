@@ -16,7 +16,7 @@ void ControlClass::Initialize()
 {
 	elevators.clear();
 	for (int i = 0; i < 3; i++) {
-		elevators.push_back(Elevator(1));
+		elevators.push_back(Elevator(i, 1));
 	}
 	floors.clear();
 	for (int i = 0; i <= floor_count; i++) {
@@ -46,12 +46,23 @@ void ControlClass::StartSimulate(onHumanDestoryCallBack hdcb, onFloorChangedCall
 			std::cout << "Generate " << humanGenThisRound << " at Time:\t" << time << std::endl;
 			for (int i = 0; i < humanGenThisRound; i++) {
 				User h = User(0, rand() % 12);
-				humans.insert(h);
+				allUsers.insert(h);
 			}
 		}
-
+		bool purge_find = true;
+		while (purge_find)
+		{
+			purge_find = false;
+			for (User u : allUsers)
+				if (u.getState() == UserState::ForPurge)
+				{
+					purge_find = true;
+					allUsers.erase(allUsers.find(u));
+					break;
+				}
+		}
 		//現時間點檢查並產生2F~12F完成工作的人，此群人將希望到1F(80%)或到2F~12F(20%)
-		for (User h : humans)
+		for (User h : allUsers)
 			h.checkStayFinished(time);
 
 		int NewOrderCount = 0;
