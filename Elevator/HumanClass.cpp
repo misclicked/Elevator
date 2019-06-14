@@ -41,3 +41,8 @@ std::pair<HumanState, int> Human::checkState(int nowTime)
 	}
 	return { state, targetFloor };
 }
+
+bool Human::operator==(const Human& obj) const
+{
+	return obj.id == id;
+}

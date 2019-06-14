@@ -1,6 +1,6 @@
 #pragma once
-#include<vector>
-#include<unordered_set>
+#include <vector>
+#include <unordered_set>
 #include "HumanClass.h"
 #include "ElevatorClass.h"
 #include "Global.h"
@@ -21,7 +21,7 @@ private:
 public:
 	ControlClass();
 	void Initialize();
-	void StartSimulate(onHumanDestoryCallBack, onFloorChangedCallBack, onElevatorFloorChangedCallBack, onElevatorHumanChangedCallBack, int sleepTimems = 1000);
+	void StartSimulate(onHumanDestoryCallBack, onFloorChangedCallBack, onElevatorFloorChangedCallBack, onElevatorHumanChangedCallBack, int sleepTimems);
 	Human* GetHumanByID(int id);
 	Elevator* GetElevatorByID(int id);
 	std::vector<Human*> GetFloorByID(int id);
