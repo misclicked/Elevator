@@ -58,23 +58,39 @@ void setText(int col, int row, const char* text) {
 	ListView_SetItemText(hListView, row, col, GetWC(text));
 }
 
-void setElevatorText(int elevatorID, int floor, const char* text) {
-	setText(elevatorID + 2, 44 - (floor - 1) * 4, text);
+void setElevatorText(int elevatorID, int block, const char* text) {
+	setText(elevatorID + 2, 44 - (block) * 2, text);
 }
 
 void setWaitingText(int floor, const char* text) {
 	setText(1, 44 - (floor - 1) * 4, text);
 }
 
+vector<string> WaitingText;
+vector<string> ElevatorText[3];
 // Main CallBack
 void onStatusChanged(void* sender, int time) {
 	ControlClass* Simulator = static_cast<ControlClass*>(sender);
+	WaitingText.clear();
+	WaitingText.resize(13);
+	for (int i = 0; i < 3; i++) {
+		ElevatorText[i].clear();
+		ElevatorText[i].resize(24);
+	}
 	for (User user : Simulator->AllUsers) {
 		if (user.NowElevatorId < 0) {
-			setWaitingText(user.NowFloor, "1");
+			WaitingText[user.NowFloor].push_back(IntToFloor(user.getTargetFloor())[0]);
 		}
 		else {
-			setElevatorText(user.NowElevatorId, Simulator->GetElevatorByID(user.NowElevatorId)->nowBlock/2, "1");
+			ElevatorText[user.NowElevatorId][Simulator->GetElevatorByID(user.NowElevatorId)->nowBlock].push_back(IntToFloor(user.getTargetFloor())[0]);
+		}
+	}
+	for (int i = 1; i <= 12; i++) {
+		setWaitingText(i, WaitingText[i].c_str());
+	}
+	for (int i = 0; i <3; i++) {
+		for (int j = 0; j < 24; j++) {
+			setElevatorText(i, j, ElevatorText[i][j].c_str());
 		}
 	}
 }

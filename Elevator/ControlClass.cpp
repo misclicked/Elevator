@@ -46,8 +46,9 @@ void ControlClass::StartSimulate(onStatusChangedCallBack osc)
 			int humanGenThisRound = rand() % 3;
 			std::cout << "Generate " << humanGenThisRound << " at Time:\t" << time << std::endl;
 			for (int i = 0; i < humanGenThisRound; i++) {
-				User h = User(0, rand() % 12 + 1);
+				User h = User(1, rand() % 12 + 1);
 				allUsers.insert(h);
+				floors[1].push_back(&h);
 			}
 		}
 		bool purge_find = true;
