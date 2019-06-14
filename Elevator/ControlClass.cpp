@@ -45,7 +45,7 @@ void ControlClass::StartSimulate(onHumanDestoryCallBack hdcb, onFloorChangedCall
 			int humanGenThisRound = rand() % 3;
 			std::cout << "Generate " << humanGenThisRound << " at Time:\t" << time << std::endl;
 			for (int i = 0; i < humanGenThisRound; i++) {
-				User h = User(0, rand() % 12);
+				User h = User(0, rand() % 12 + 1);
 				allUsers.insert(h);
 			}
 		}
@@ -172,12 +172,12 @@ int ControlClass::CheckNewOrder(Elevator* elt)
 {
 	//下行
 	if(elt->direction() < 0)
-		for (int i = elt->floor - 1; i >= 0; --i)
+		for (int i = elt->floor - 1; i >= 1; --i)
 			if (floors_order[i].size() > 0)
 				return i;
 	//上行
 	if (elt->direction() > 0)
-		for (int i = elt->floor; i < floor_count; ++i)
+		for (int i = elt->floor; i <= floor_count; ++i)
 			if (floors_order[i].size() > 0)
 				return i;
 	return -1; // no new user
