@@ -7,10 +7,10 @@
 class ControlClass
 {
 private:
-	typedef void onHumanDestoryCallBack(void*, int); //self, humanID
-	typedef void onFloorChangedCallBack(void*, int); //self, floorID
-	typedef void onElevatorBlockChangedCallBack(void*, int); //self, elevatorID
-	typedef void onElevatorHumanChangedCallBack(void*, int); //self, elevatorID
+	typedef void (*onHumanDestoryCallBack)(void*, int); //self, humanID
+	typedef void (*onFloorChangedCallBack)(void*, int); //self, floorID
+	typedef void (*onElevatorBlockChangedCallBack)(void*, int); //self, elevatorID
+	typedef void (*onElevatorHumanChangedCallBack)(void*, int); //self, elevatorID
 	std::unordered_set<Human> humans;
 	std::vector<Elevator> elevators;
 	std::vector<std::vector<Human*> > floor;
@@ -27,4 +27,15 @@ public:
 	Elevator* GetElevatorByID(int id);
 	std::vector<Human*> GetFloorByID(int id);
 };
-
+class CallBackDemo {
+private:
+	typedef int (*myCallBack)(void*, int);
+	myCallBack mcb;
+public:
+	void setCallBack(myCallBack cb) {
+		mcb = cb;
+	}
+	void Run() {
+		int result = (*mcb)(this, 5);
+	}
+};

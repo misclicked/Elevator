@@ -25,6 +25,7 @@ void ControlClass::Initialize()
 	}
 }
 
+
 void ControlClass::StartSimulate(onHumanDestoryCallBack hdcb, onFloorChangedCallBack fccb, onElevatorBlockChangedCallBack efccb, onElevatorHumanChangedCallBack ehccb, int sleepTimems)
 {
 	int time = 0;
