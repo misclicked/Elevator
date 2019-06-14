@@ -1,20 +1,18 @@
 #pragma once
 
-enum class HumanState {
+enum class UserState {
 	WaitingUpside = 0,
 	WaitingDownSide = 1,
 	Staying = 2,
 	OnElevator = 3,
+	ForPurge = 4
 };
 
 enum class ElevatorState {
 	Idle = 0,
-	Transmitting = 1,
-	Boarding = 2,
-	Full = 4,
-	Waiting = 8,
-	Upper = 16,
-	Lower = 32
+	Moving = 1,
+	Loading = 2,
+	UnLoading = 3,
 };
 
 enum class ElevatorMoveState {
@@ -23,8 +21,11 @@ enum class ElevatorMoveState {
 };
 
 const int floor_per_block = 2;
-const int sync_period = 1000; //ms
-const int floor_count = 12;
+const int sync_period = 1000; //ms(real time)
+const int floor_count = 12;   
+const double board_speed = 0.7;//time
+const int target_null = -1;
+const int elevator_speed = 1; //1 block/time
 
 template<typename Enum>
 Enum operator |(Enum lhs, Enum rhs)

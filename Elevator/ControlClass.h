@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <deque>
 #include <unordered_set>
 #include "HumanClass.h"
 #include "ElevatorClass.h"
@@ -11,21 +12,21 @@ private:
 	typedef void (*onFloorChangedCallBack)(void*, int); //self, floorID
 	typedef void (*onElevatorBlockChangedCallBack)(void*, int); //self, elevatorID
 	typedef void (*onElevatorHumanChangedCallBack)(void*, int); //self, elevatorID
-	std::unordered_set<Human> humans;
+	std::unordered_set<User> humans;
 	std::vector<Elevator> elevators;
-	std::vector<std::vector<Human*> > floors;
+	std::vector<std::deque<User*> > floors;
 	onHumanDestoryCallBack pHDCB; //once human fulfill target
 	onFloorChangedCallBack pFCCB; //once floor populance changed
 	onElevatorBlockChangedCallBack pEFCCB; //block changed
 	onElevatorHumanChangedCallBack pEHCCB; //once elavator populance changed
-
+	std::vector<std::vector<int>> floors_order;
 public:
 	ControlClass();
 	void Initialize();
 	void StartSimulate(onHumanDestoryCallBack, onFloorChangedCallBack, onElevatorBlockChangedCallBack, onElevatorHumanChangedCallBack, int sleepTimems);
-	Human* GetHumanByID(int id);
+	User* GetHumanByID(int id);
 	Elevator* GetElevatorByID(int id);
-	std::vector<Human*> GetFloorByID(int id);
+	std::vector<User*> GetFloorByID(int id);
 };
 class CallBackDemo {
 private:

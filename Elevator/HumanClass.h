@@ -2,33 +2,34 @@
 #include <utility>
 #include "Global.h"
 
-class Human {
+class User {
 private:
 	int stayTime;    //how many time this human stay in paticular floor
 	int arrivedTime; 
-	char nowFloor;
-	char targetFloor;
-	HumanState state;
+	int nowFloor;
+	int targetFloor;
+	int nowElevatorId;
+	UserState state;
 public:
 	int id;
-	Human(char nowFloor, char targetFloor);
+	User(char nowFloor, char targetFloor);
 	void init(char nowFloor, char targetFloor);
-	void setOnElevator();
+	void setOnElevator(int ele_id);
 	void setArriveTarget(int nowTime);
-	HumanState getState();
+	UserState getState();
 	int getTargetFloor();
-	std::pair<HumanState, int> checkStayFinished(int nowTime);
-	bool operator == (const Human& obj) const;
+	std::pair<UserState, int> checkStayFinished(int nowTime);
+	bool operator == (const User& obj) const;
 };
 
 namespace std
 {
 	template<> 
-	struct hash<Human>
+	struct hash<User>
 	{
-		size_t operator()(const Human& obj) const;
+		size_t operator()(const User& obj) const;
 	};
-	inline size_t hash<Human>::operator()(const Human& obj) const
+	inline size_t hash<User>::operator()(const User& obj) const
 	{
 		return hash<int>()(obj.id);
 	}
