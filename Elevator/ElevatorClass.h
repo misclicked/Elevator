@@ -15,12 +15,12 @@ private:
 	int _boardStartTime;
 	const int Capacity = 10;
 public:
-	Elevator(int nowBlock); 
+	Elevator(int nowBlock);
 	bool Load(User* user);
 	bool Unload(User* user, int now_time);
-	const double& boardedTime  = _boardedTime; // time that users have boarded
-	const int& boardStartTime  = _boardStartTime;
-	const int& nowBlock		   = _nowBlock;
+	const double& boardedTime = _boardedTime; // time that users have boarded
+	const int& boardStartTime = _boardStartTime;
+	const int& nowBlock = _nowBlock;
 	const ElevatorState& state = _state;
 	void setBroadStartTime(int time) { _boardStartTime = time; }
 	void SetState(ElevatorState state_in) { _state = state_in; }

@@ -15,6 +15,11 @@ enum class ElevatorState {
 	UnLoading = 3,
 };
 
+enum class ElevatorMoveState {
+	Upside = 0,
+	DownSide = 1
+};
+
 const int floor_per_block = 2;
 const int sync_period = 1000; //ms(real time)
 const int floor_count = 12;   

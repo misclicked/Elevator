@@ -15,7 +15,7 @@ bool Elevator::Load(User* human)
 		return false;
 	_boardedTime += board_speed;
 	users.insert(human);
-	double min_target = floor_count; 
+	double min_target = floor_count;
 	double max_target = -1.0;
 	for (auto h : users)
 	{
@@ -24,10 +24,9 @@ bool Elevator::Load(User* human)
 		if ((h->getTargetFloor()) < min_target)
 			min_target = h->getTargetFloor();
 	}
-	
-	if (getFloor() > max_target) 
+	if (getFloor() > max_target)
 		_targetFloor = min_target;//Only User Move Downward 
- 	else 
+	else
 		_targetFloor = max_target;//Only User Move Upward
 	return true;
 }
@@ -46,7 +45,7 @@ bool Elevator::MoveOnce()
 		_nowBlock += elevator_speed;
 	else if (direction() < 0)
 		_nowBlock -= elevator_speed;
-	else 
+	else
 		return false;
 	return true;
 }
