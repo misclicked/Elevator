@@ -1,7 +1,8 @@
 #include "ElevatorClass.h"
 
-Elevator::Elevator(int nowFloor)
+Elevator::Elevator(int id,int nowFloor)
 {
+	_id = id;
 	_state = ElevatorState::Idle;
 	_boardedTime = 0;
 	_boardStartTime = 0;
@@ -18,7 +19,7 @@ bool Elevator::Load(User* user)
 			return false;
 	if (isFull()) //º¡­û
 		return false;
-
+	user->setOnElevator(_id);
 	_boardedTime += board_speed;
 	users.insert(user);
 	double min_target = floor_count + 1.0;

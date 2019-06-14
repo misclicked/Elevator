@@ -15,8 +15,9 @@ private:
 	int _boardStartTime;
 	int _prefer_direction;
 	const int Capacity = 10;
+	int _id;
 public:
-	Elevator(int nowBlock);
+	Elevator(int id,int nowBlock);
 	bool Load(User* user);
 	bool Unload(User* user, int now_time);
 	void setTarget(int target);
