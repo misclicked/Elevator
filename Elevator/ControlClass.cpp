@@ -97,7 +97,7 @@ void ControlClass::StartSimulate(onStatusChangedCallBack osc)
 					elt.setState(ElevatorState::Loading);
 					continue;
 				}
-				//檢查上行是否存在新需求，若是Idle以往上乘客優先乘載
+				//檢查上行電梯內是否存在新需求，若是Idle以往上乘客優先乘載
 				if (elt.getPreferDirection() >= 0)
 					for (int i = elt.getFloor() + 1; i <= floor_count; ++i)
 						if (elevator_order[i].size() > 0)
@@ -107,17 +107,38 @@ void ControlClass::StartSimulate(onStatusChangedCallBack osc)
 							continue;
 						}
 
+				//檢查下行電梯內是否存在新需求
+				if (elt.getPreferDirection() < 0)
+					for (int i = elt.getFloor() - 1; i >=1 ; --i)
+					{
+						if (elevator_order[i].size() > 0)
+						{
+							elt.setTarget(i);
+							elt.setState(ElevatorState::Moving);
+							continue;
+						}
+					}
+				//檢查上行是否存在新需求，若是Idle以往上乘客優先乘載
+				if (elt.getPreferDirection() >= 0)
+					for (int i = elt.getFloor() + 1; i <= floor_count; ++i)
+						if (floors_order[i].size() > 0)
+						{
+							elt.setTarget(i);
+							elt.setState(ElevatorState::Moving);
+							continue;
+						}
+
 				//檢查下行是否存在新需求
 				if (elt.getPreferDirection() < 0)
-				for (int i = elt.getFloor() - 1; i >=1 ; --i)
-				{
-					if (elevator_order[i].size() > 0)
+					for (int i = elt.getFloor() - 1; i >= 1; --i)
 					{
-						elt.setTarget(i);
-						elt.setState(ElevatorState::Moving);
-						continue;
+						if (floors_order[i].size() > 0)
+						{
+							elt.setTarget(i);
+							elt.setState(ElevatorState::Moving);
+							continue;
+						}
 					}
-				}
 				break;
 			case ElevatorState::Moving:
 				//移動中有人按電梯於最近方向之樓層
@@ -151,16 +172,13 @@ void ControlClass::StartSimulate(onStatusChangedCallBack osc)
 						elt.setState(ElevatorState::Idle);
 				}
 				break;
-			case ElevatorState::UnLoading:
+			case ElevatorState::UnLoading:{}
 				//此單位時間可釋放數
-				for (int i = 0; i < LoadCount; ++i)
-				{
-					User* user = elt.HaveUnloadableUser();
-					if (user !=nullptr)
-						elt.Unload(user, time);
-					else
-						elt.setState(ElevatorState::Idle);
+				User* user;
+				while ((user = elt.HaveUnloadableUser()) != nullptr) {
+					elt.Unload(user, time);
 				}
+				elt.setState(ElevatorState::Idle);
 				break;
 			}
 		}
