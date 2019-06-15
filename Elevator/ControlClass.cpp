@@ -36,24 +36,25 @@ void ControlClass::Initialize()
 		elevator_order.push_back(vec);
 
 	}
+	TotalRun = 0;
+	TotalWaitTime = 0;
 }
 
 void ControlClass::StartSimulate(onStatusChangedCallBack osc)
 {
 	this->pStatusChanged = osc;
-	int time = 0;
-	const int humanGenRate = 5; //humanGenRate(%)
+	Time = 0;
 	std::queue<int> floorQuery;
 	std::unordered_map<int, bool> floorQueryHandled;
 	int new_order =0;
 
 	while (true) {
 		//1樓產生新工作者
-		if (rand() % 100 < humanGenRate) {
+		if (rand() % 100 < humanGenRate && allUsers.size() <= max_user) {
 			int humanGenThisRound = rand() % 3;
-			std::cout << "Generate " << humanGenThisRound << " at Time:\t" << time << std::endl;
+			std::cout << "Generate " << humanGenThisRound << " at Time:\t" << Time << std::endl;
 			for (int i = 0; i < humanGenThisRound; i++) {
-				User* h = new User(1, rand() % 11 + 2);
+				User* h = new User(1, rand() % 11 + 2, Time);
 				allUsers.insert(h);
 				floors[1].push_back(h);
 			}
@@ -66,27 +67,39 @@ void ControlClass::StartSimulate(onStatusChangedCallBack osc)
 				if (u->getState() == UserState::ForPurge)
 				{
 					purge_find = true;
-					allUsers.erase(allUsers.find(u));
+					auto it = allUsers.find(u);
+					auto pUser = *it;
+					allUsers.erase(it);
+					if (pUser->getNowElevatorId() != -1) {
+						auto& _ele = elevators[pUser->getNowElevatorId()];
+						_ele.users.erase(_ele.users.find(pUser));
+						_ele.setState(ElevatorState::Idle);
+					}
+					else {
+						auto& _floor = floors[pUser->getNowFloor()];
+						_floor.erase(std::remove(_floor.begin(), _floor.end(), pUser), _floor.end());
+					}
+					delete pUser;
 					break;
 				}
 		}
 		//現時間點檢查並產生2F~12F完成工作的人，此群人將希望到1F(80%)或到2F~12F(20%)
 		for (User* h : allUsers)
-			h->checkStayFinished(time);
+			h->checkStayFinished(Time);
 
 		int NewOrderCount = ResetOrder();
 		//命令: 執行1次時間單位之電梯移動
 		for (Elevator& elt : elevators)
 		{
 			//若電梯進出中此次時間內可進出的人數
-			int LoadCount = (int)(((time - (double)elt.getBoardStartTime()) - elt.getBoardedTime()) / board_speed);
+			int LoadCount = (int)(((Time - (double)elt.getBoardStartTime()) - elt.getBoardedTime()) / board_speed);
 			switch (elt.getElevatorState())
 			{
 			case ElevatorState::Idle: //到達目標或等待中
 				//存在使用者想下電梯
 				if (elt.HaveUnloadableUser() != nullptr)
 				{
-					elt.setBroadStartTime(time);
+					elt.setBroadStartTime(Time);
 					elt.setState(ElevatorState::UnLoading);
 					continue;
 				}
@@ -94,7 +107,7 @@ void ControlClass::StartSimulate(onStatusChangedCallBack osc)
 				if (floors_order[elt.getFloor()].size() > 0 && !elt.isFull() &&
 					CheckDirectionOrderExist(&elt))
 				{
-					elt.setBroadStartTime(time);
+					elt.setBroadStartTime(Time);
 					elt.setState(ElevatorState::Loading);
 					continue;
 				}
@@ -159,11 +172,10 @@ void ControlClass::StartSimulate(onStatusChangedCallBack osc)
 				break;
 			case ElevatorState::UnLoading:
 				
-				User* user;
 				int unloadCnt = 0;
 				//此單位時間可離開之使用者
 				while (unloadCnt < LoadCount) {
-					UnLoadUserOnce(&elt, time);
+					UnLoadUserOnce(&elt, Time);
 					unloadCnt++;
 				}
 				elt.setState(ElevatorState::Idle);
@@ -171,8 +183,8 @@ void ControlClass::StartSimulate(onStatusChangedCallBack osc)
 			}
 			NewOrderCount = ResetOrder();
 		}
-		time++;
-		(*pStatusChanged)(this, time);
+		Time++;
+		(*pStatusChanged)(this, Time);
 		//Check Elvator in floor have target or 
 		std::this_thread::sleep_for(sync_period * 1ms); //sleep and wait till next cycle
 	}
@@ -203,6 +215,9 @@ bool ControlClass::UnLoadUserOnce(Elevator* p_elt, int time)
 		if(user->getState() != UserState::ForPurge)
 			floors[user->getNowFloor()].push_back(user);
 		unloaded = true;
+		TotalRun++;
+		TotalWaitTime += time - user->JoinTime;
+		user->JoinTime = time;
 	}
 	return unloaded;
 }
@@ -267,8 +282,8 @@ Elevator* ControlClass::GetElevatorByID(int id)
 	return &elevators[id];
 }
 
-std::vector<User*> ControlClass::GetFloorByID(int id)
+std::deque<User*>* ControlClass::GetFloorByID(int id)
 {
-	return std::vector<User*>();
+	return &floors[id];
 }
 

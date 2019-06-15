@@ -1,10 +1,11 @@
 #include "HumanClass.h"
 #include <iostream>
 
-User::User(char nowFloor, char targetFloor)
+User::User(char nowFloor, char targetFloor, int time)
 {
 	init(nowFloor, targetFloor);
 	id = HID++;
+	JoinTime = time;
 }
 
 void User::init(char nowFloor, char targetFloor)
@@ -44,6 +45,11 @@ void User::setArriveTarget(int nowTime)
 UserState User::getState()
 {
 	return state;
+}
+
+void User::setState(UserState state)
+{
+	this->state = state;
 }
 
 int User::getTargetFloor()

@@ -11,14 +11,16 @@ private:
 	int nowElevatorId;
 	UserState state;
 public:
+	int JoinTime;
 	int id;
-	User(char nowFloor, char targetFloor);
+	User(char nowFloor, char targetFloor, int time);
 	int getNowFloor() { return nowFloor; };
 	int getNowElevatorId() { return nowElevatorId; };
 	void init(char nowFloor, char targetFloor);
 	void setOnElevator(int ele_id);
 	void setArriveTarget(int nowTime);
 	UserState getState();
+	void setState(UserState state);
 	int getTargetFloor();
 	std::pair<UserState, int> checkStayFinished(int nowTime);
 	bool operator == (const User& obj) const;

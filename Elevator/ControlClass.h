@@ -19,14 +19,13 @@ private:
 		}
 	};
 	typedef void (*onStatusChangedCallBack)(void*, int); //self, time
-	std::unordered_set<User*, PointedObjHash, PointedObjEq> allUsers;
-	std::vector<Elevator> elevators;
-	std::vector<std::deque<User*> > floors;
 	onStatusChangedCallBack pStatusChanged; //on time chnaged
 	std::vector<std::vector<int>> floors_order;
 	std::vector<std::vector<int>> elevator_order;
 public:
 	ControlClass();
+	std::vector<Elevator> elevators;
+	std::vector<std::deque<User*> > floors;
 	std::unordered_set<User*, PointedObjHash, PointedObjEq> getAllUsers() { return allUsers; }
 	void Initialize();
 	void StartSimulate(onStatusChangedCallBack);
@@ -37,7 +36,11 @@ public:
 	int CheckNewOrder(Elevator* elt);
 	User* GetHumanByID(int id);
 	Elevator* GetElevatorByID(int id);
-	std::vector<User*> GetFloorByID(int id);
+	std::deque<User*>* GetFloorByID(int id);
+	std::unordered_set<User*, PointedObjHash, PointedObjEq> allUsers;
+	int TotalRun;
+	int TotalWaitTime;
+	int Time;
 };
 class CallBackDemo {
 private:

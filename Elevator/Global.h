@@ -26,6 +26,8 @@ const int floor_count = 12;
 const double board_speed = 0.7;//time
 const int target_null = -1;
 const int elevator_speed = 1; //1 block/time
+const int max_user = 150;	//User上限
+const int humanGenRate = 0; //User產生機率(%) 機率愈高產生速度愈快
 
 template<typename Enum>
 Enum operator |(Enum lhs, Enum rhs)

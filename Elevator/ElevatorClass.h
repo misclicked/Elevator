@@ -18,7 +18,6 @@ private:
 			return user->id;
 		}
 	};
-	std::unordered_set< User*, PointedObjHash, PointedObjEq> users;
 	ElevatorState _state;
 	int _nowBlock;
 	int _targetFloor;
@@ -29,6 +28,7 @@ private:
 	int _id;
 public:
 	Elevator(int id,int nowBlock);
+	std::unordered_set< User*, PointedObjHash, PointedObjEq> users;
 	bool Load(User* user);
 	bool Unload(User* user, int now_time);
 	void setTarget(int target);
@@ -42,6 +42,7 @@ public:
 	bool setPreferTarget();
 	bool isTargetReached();
 	int getFloor() const;
+	void setFloor(int floor);
 	double getFloorRF() const;
 	void setBroadStartTime(int time) { _boardStartTime = time; _boardedTime = 0; }
 	void setState(ElevatorState state_in) { _state = state_in; }
@@ -50,4 +51,5 @@ public:
 	User* HaveUnloadableUser();
 	bool isFull();
 	int userCount();
+	int ThroughPut;
 };

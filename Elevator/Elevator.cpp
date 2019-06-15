@@ -78,6 +78,29 @@ void setWaitingText(int floor, const char* text) {
 	setText(1, 44 - (floor - 1) * 4, text);
 }
 
+void setTotalRunText(const char* text) {
+	setText(5, 1, text);
+}
+
+void setTotalWaitTimeText(const char* text) {
+	setText(5, 3, text);
+}
+
+void setAverageWaitTimeText(const char* text) {
+	setText(5, 5, text);
+}
+
+void setElevatorAThroughput(const char* text) {
+	setText(5, 7, text);
+}
+
+void setElevatorBThroughput(const char* text) {
+	setText(5, 9, text);
+}
+
+void setElevatorCThroughput(const char* text) {
+	setText(5, 11, text);
+}
 vector<string> WaitingText;
 vector<string> ElevatorText[3];
 // Main CallBack
@@ -107,11 +130,19 @@ void onStatusChanged(void* sender, int time) {
 		for (int j = 0; j < 24; j++) {
 			if (ElevatorText[i][j].size()) {
 				ElevatorText[i][j].push_back('|');
-				ElevatorText[i][j] += ToString(Simulator->GetElevatorByID(i)->getElevatorState());
+				/* DEBUG
+					ElevatorText[i][j] += ToString(Simulator->GetElevatorByID(i)->getElevatorState());
+				*/
 			}
 			setElevatorText(i, j, ElevatorText[i][j].c_str());
 		}
 	}
+	setTotalRunText(to_string(Simulator->TotalRun).c_str());
+	setTotalWaitTimeText(to_string(Simulator->TotalWaitTime).c_str());
+	setAverageWaitTimeText(to_string((Simulator->TotalWaitTime*1.0)/ Simulator->TotalRun).c_str());
+	setElevatorAThroughput(to_string(Simulator->GetElevatorByID(0)->ThroughPut).c_str());
+	setElevatorBThroughput(to_string(Simulator->GetElevatorByID(1)->ThroughPut).c_str());
+	setElevatorCThroughput(to_string(Simulator->GetElevatorByID(2)->ThroughPut).c_str());
 }
 
 // Button CallBack
@@ -135,19 +166,29 @@ LRESULT CALLBACK BtnMsgProc(int iCode, WPARAM wParam, LPARAM lParam)
 	else if (msg->hwnd == hBtnAddProp) {
 		switch (msg->message) {
 		case WM_LBUTTONUP:
-			setElevatorText(rand() % 3, rand() % 12 + 1, "Full");
+			User* h = new User(1, rand() % 11 + 2, Simulator.Time);
+			Simulator.allUsers.insert(h);
+			Simulator.GetFloorByID(1)->push_back(h);
 			break;
 		}
 	}
 	else if (msg->hwnd == hBtnKillProp) {
 		switch (msg->message) {
 		case WM_LBUTTONUP:
+			if (!Simulator.allUsers.size())break;
+			auto it = Simulator.allUsers.begin();
+			advance(it, rand() % Simulator.allUsers.size());
+			(*it)->setState(UserState::ForPurge);
 			break;
 		}
 	}
 	else if (msg->hwnd == hBtnResetElevator) {
 		switch (msg->message) {
 		case WM_LBUTTONUP:
+			for (Elevator& ele : Simulator.elevators) {
+				ele.setState(ElevatorState::Idle);
+				ele.setFloor(1);
+			}
 			break;
 		}
 	}
@@ -316,8 +357,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	lvI.iSubItem = 5;
 	auto SetStatisticItem = [&](auto id, auto text) {lvI.iItem = id; lvI.pszText = GetWC(text); ListView_SetItem(hListView, &lvI); };
 	SetStatisticItem(0, "Finished Run:");
-	SetStatisticItem(2, "Total Used Time:");
-	SetStatisticItem(4, "Wait Time Per User:");
+	SetStatisticItem(2, "Total Wait Time:");
+	SetStatisticItem(4, "Average Wait Time:");
 	SetStatisticItem(6, "Elevator A Through Put");
 	SetStatisticItem(8, "Elevator B Through Put");
 	SetStatisticItem(10, "Elevator C Through Put");

@@ -9,6 +9,7 @@ Elevator::Elevator(int id,int nowFloor)
 	_nowBlock = nowFloor / 2;
 	_targetFloor = target_null;
 	_prefer_direction = 0;
+	ThroughPut = 0;
 }
 
 bool Elevator::Load(User* user)
@@ -23,6 +24,7 @@ bool Elevator::Load(User* user)
 	if (isFull()) //º¡­û
 		return false;
 	user->setOnElevator(_id);
+	ThroughPut++;
 	_boardedTime += board_speed;
 	users.insert(user);
 	Reset_PreferDirection();
@@ -71,6 +73,11 @@ int Elevator::getFloor() const
 	return _nowBlock / floor_per_block + 1;
 }
 
+void Elevator::setFloor(int floor)
+{
+	_nowBlock = (floor - 1) * 2;
+}
+
 double Elevator::getFloorRF() const
 {
 	return (double)_nowBlock / (double)floor_per_block + 1;
@@ -106,6 +113,7 @@ bool Elevator::Unload(User* user, int now_time)
 {
 	if (users.count(user) > 0 && user->getTargetFloor() == getFloor()) {
 		user->setArriveTarget(now_time);
+		ThroughPut++;
 		users.erase(user);
 		Reset_PreferDirection();
 		return true;
