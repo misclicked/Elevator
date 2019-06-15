@@ -170,7 +170,7 @@ void ControlClass::StartSimulate(onStatusChangedCallBack osc)
 			case ElevatorState::Loading:
 				//此單位時間可載人數
 				for (int i = 0; i < LoadCount; ++i)
-					if (!LoadUserOnce(&elt)) //無人可以再乘坐電梯
+					if (!LoadUserOnce(&elt, Time)) //無人可以再乘坐電梯
 					{
 						elt.setPreferTarget();
 						elt.setState(ElevatorState::Idle);
@@ -195,7 +195,7 @@ void ControlClass::StartSimulate(onStatusChangedCallBack osc)
 		std::this_thread::sleep_for(sync_period * 1ms); //sleep and wait till next cycle
 	}
 }
-bool ControlClass::LoadUserOnce(Elevator* p_elt)
+bool ControlClass::LoadUserOnce(Elevator* p_elt, int time)
 {
 	int floor_id = p_elt->getFloor();
 	if (p_elt->isFull()) 
@@ -205,6 +205,9 @@ bool ControlClass::LoadUserOnce(Elevator* p_elt)
 	for (int i = 0; i < floors[floor_id].size(); ++i)
 		if (p_elt->Load(floors[floor_id][i]))
 		{
+			TotalRun++;
+			TotalWaitTime += time - floors[floor_id][i]->JoinTime;
+			floors[floor_id][i]->JoinTimeSetted = false;
 			floors[floor_id].erase(floors[floor_id].begin() + i);
 			loaded = true;
 		}
@@ -221,9 +224,6 @@ bool ControlClass::UnLoadUserOnce(Elevator* p_elt, int time)
 		if(user->getState() != UserState::ForPurge)
 			floors[user->getNowFloor()].push_back(user);
 		unloaded = true;
-		TotalRun++;
-		TotalWaitTime += time - user->JoinTime;
-		user->JoinTimeSetted = false;
 	}
 	return unloaded;
 }
