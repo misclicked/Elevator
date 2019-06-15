@@ -51,6 +51,18 @@ string IntToFloor(const int floor) {
 	return iStr;
 }
 
+inline const char* ToString(ElevatorState es)
+{
+	switch (es)
+	{
+	case ElevatorState::Idle:		return "Idle";
+	case ElevatorState::Loading:		return "Loading";
+	case ElevatorState::UnLoading:	return "UnLoading";
+	case ElevatorState::Moving:		return "Moving";
+	default:      return "[Unknown ElevatorState]";
+	}
+}
+
 
 // ListView Setting Functions
 
@@ -77,9 +89,9 @@ void onStatusChanged(void* sender, int time) {
 		ElevatorText[i].clear();
 		ElevatorText[i].resize(24);
 	}
-	ElevatorText[0][Simulator->GetElevatorByID(0)->getNowBlock()].push_back('W');
-	ElevatorText[1][Simulator->GetElevatorByID(1)->getNowBlock()].push_back('W');
-	ElevatorText[2][Simulator->GetElevatorByID(2)->getNowBlock()].push_back('W');
+	ElevatorText[0][Simulator->GetElevatorByID(0)->getNowBlock()].push_back('|');
+	ElevatorText[1][Simulator->GetElevatorByID(1)->getNowBlock()].push_back('|');
+	ElevatorText[2][Simulator->GetElevatorByID(2)->getNowBlock()].push_back('|');
 	for (User* user : Simulator->getAllUsers()) {
 		if (user->getNowElevatorId() < 0) {
 			WaitingText[user->getNowFloor()].push_back(IntToFloor(user->getTargetFloor())[0]);
@@ -93,6 +105,10 @@ void onStatusChanged(void* sender, int time) {
 	}
 	for (int i = 0; i <3; i++) {
 		for (int j = 0; j < 24; j++) {
+			if (ElevatorText[i][j].size()) {
+				ElevatorText[i][j].push_back('|');
+				ElevatorText[i][j] += ToString(Simulator->GetElevatorByID(i)->getElevatorState());
+			}
 			setElevatorText(i, j, ElevatorText[i][j].c_str());
 		}
 	}
