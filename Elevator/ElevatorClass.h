@@ -32,16 +32,20 @@ public:
 	bool Load(User* user);
 	bool Unload(User* user, int now_time);
 	void setTarget(int target);
+	int getTarget() { return _targetFloor; }
 	int getBoardedTime() { return _boardedTime; } // time that users have boarded
 	int getBoardStartTime() { return _boardStartTime; }
 	int getNowBlock() { return _nowBlock; }
 	int getPreferDirection() { return _prefer_direction; }
 	ElevatorState getElevatorState() { return _state; };
+	void Reset_PreferDirection();
+	bool setPreferTarget();
+	bool isTargetReached();
 	int getFloor() const;
 	double getFloorRF() const;
 	void setBroadStartTime(int time) { _boardStartTime = time; _boardedTime = 0; }
 	void setState(ElevatorState state_in) { _state = state_in; }
-	int direction(); // target_block - _nowBlock  ( > 0) ? MovingUpward : ? ( <0 ) MovingDownward (==0) Idle
+	double direction(); // target_block - _nowBlock  ( > 0) ? MovingUpward : ? ( <0 ) MovingDownward (==0) Idle
 	bool MoveOnce();
 	User* HaveUnloadableUser();
 	bool isFull();

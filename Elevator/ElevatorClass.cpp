@@ -13,17 +13,31 @@ Elevator::Elevator(int id,int nowFloor)
 
 bool Elevator::Load(User* user)
 {
+	if (user->getState() != UserState::WaitingDownside &&
+		user->getState() != UserState::WaitingUpside)
+		return false;
 	if (_prefer_direction != 0) // 使用者方向與電梯遵循方向不符
-		if ((user->getTargetFloor() > getFloor() && _prefer_direction < 0) ||
-			(user->getTargetFloor() < getFloor() && _prefer_direction > 0))
+		if ((user->getState() == UserState::WaitingDownside && _prefer_direction < 0) ||
+			(user->getState() == UserState::WaitingUpside   && _prefer_direction > 0))
 			return false;
 	if (isFull()) //滿員
 		return false;
 	user->setOnElevator(_id);
 	_boardedTime += board_speed;
 	users.insert(user);
+	Reset_PreferDirection();
+	return true;
+}
+void Elevator::Reset_PreferDirection()
+{
+	if (users.size() == 0)
+	{
+		_prefer_direction = 0;
+		return;
+	}
 	double min_target = floor_count + 1.0;
 	double max_target = -1.0;
+	//計算最近的目標
 	for (auto h : users)
 	{
 		if ((h->getTargetFloor()) > max_target)
@@ -37,9 +51,21 @@ bool Elevator::Load(User* user)
 		_targetFloor = min_target;//Only Have Users: Move Upward
 
 	_prefer_direction = _targetFloor - getFloor();
-	return true;
 }
-
+bool Elevator::setPreferTarget()
+{
+	Reset_PreferDirection();
+	if (_prefer_direction != 0)
+	{
+		_targetFloor = getFloor() + _prefer_direction;
+		return true;
+	}
+	return false;
+}
+bool Elevator::isTargetReached()
+{
+	return (_nowBlock % 2 == 0 && getFloor() == _targetFloor) ? true : false;
+}
 int Elevator::getFloor() const
 {
 	return _nowBlock / floor_per_block + 1;
@@ -50,12 +76,12 @@ double Elevator::getFloorRF() const
 	return (double)_nowBlock / (double)floor_per_block + 1;
 }
 
-int Elevator::direction()
+double Elevator::direction()
 {
-	return _targetFloor - getFloor();
+	return _targetFloor - getFloorRF();
 }
 
-///按照方向執行移動一次: 若是未移動則回傳false
+//按照方向執行移動一次: 若是未移動則回傳false
 bool Elevator::MoveOnce()
 {
 	if (_targetFloor == target_null)
@@ -81,15 +107,13 @@ bool Elevator::Unload(User* user, int now_time)
 	if (users.count(user) > 0 && user->getTargetFloor() == getFloor()) {
 		user->setArriveTarget(now_time);
 		users.erase(user);
+		Reset_PreferDirection();
 		return true;
 	}
-	if (users.size() == 0)
-		_prefer_direction = 0;
 	return false;
 }
 void Elevator::setTarget(int target)
 {
-	_prefer_direction = _targetFloor - getFloor();
 	_targetFloor = target;
 }
 bool Elevator::isFull()

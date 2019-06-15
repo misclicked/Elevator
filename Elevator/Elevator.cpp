@@ -81,11 +81,11 @@ void onStatusChanged(void* sender, int time) {
 	ElevatorText[1][Simulator->GetElevatorByID(1)->getNowBlock()].push_back('W');
 	ElevatorText[2][Simulator->GetElevatorByID(2)->getNowBlock()].push_back('W');
 	for (User* user : Simulator->getAllUsers()) {
-		if (user->NowElevatorId < 0) {
-			WaitingText[user->NowFloor].push_back(IntToFloor(user->getTargetFloor())[0]);
+		if (user->getNowElevatorId() < 0) {
+			WaitingText[user->getNowFloor()].push_back(IntToFloor(user->getTargetFloor())[0]);
 		}
 		else {
-			ElevatorText[user->NowElevatorId][Simulator->GetElevatorByID(user->NowElevatorId)->getNowBlock()].push_back(IntToFloor(user->getTargetFloor())[0]);
+			ElevatorText[user->getNowElevatorId()][Simulator->GetElevatorByID(user->getNowElevatorId())->getNowBlock()].push_back(IntToFloor(user->getTargetFloor())[0]);
 		}
 	}
 	for (int i = 1; i <= 12; i++) {

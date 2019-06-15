@@ -15,7 +15,7 @@ void User::init(char nowFloor, char targetFloor)
 	arrivedTime = INT_MAX;
 	nowElevatorId = -1;
 	state = (targetFloor > nowFloor) ? UserState::WaitingUpside
-								     : UserState::WaitingDownSide;
+								     : UserState::WaitingDownside;
 }
 
 void User::setOnElevator(int ele_id)
@@ -58,7 +58,7 @@ std::pair<UserState, int> User::checkStayFinished(int nowTime)
 		targetFloor = (rand() % 100 < 80) ? 1 : rand() % 11 + 2;
 		//Set new State
 		state = (targetFloor > nowFloor) ? UserState::WaitingUpside
-										 : UserState::WaitingDownSide;
+										 : UserState::WaitingDownside;
 		printf("Human:%d Finish his job and hope to go to floor:%d",id, targetFloor);
 	}
 	return { state, targetFloor };

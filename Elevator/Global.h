@@ -2,7 +2,7 @@
 
 enum class UserState {
 	WaitingUpside = 0,
-	WaitingDownSide = 1,
+	WaitingDownside = 1,
 	Staying = 2,
 	OnElevator = 3,
 	ForPurge = 4

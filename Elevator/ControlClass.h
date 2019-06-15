@@ -30,6 +30,9 @@ public:
 	std::unordered_set<User*, PointedObjHash, PointedObjEq> getAllUsers() { return allUsers; }
 	void Initialize();
 	void StartSimulate(onStatusChangedCallBack);
+	bool LoadUserOnce(Elevator* p_elt);
+	bool UnLoadUserOnce(Elevator* p_elt, int time);
+	bool CheckDirectionOrderExist(Elevator* p_elt);
 	int ResetOrder();
 	int CheckNewOrder(Elevator* elt);
 	User* GetHumanByID(int id);
