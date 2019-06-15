@@ -200,7 +200,8 @@ bool ControlClass::UnLoadUserOnce(Elevator* p_elt, int time)
 	if (user != nullptr)
 	{
 		p_elt->Unload(user, time);
-		floors[user->getNowFloor()].push_back(user);
+		if(user->getState() != UserState::ForPurge)
+			floors[user->getNowFloor()].push_back(user);
 		unloaded = true;
 	}
 	return unloaded;

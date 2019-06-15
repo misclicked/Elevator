@@ -17,8 +17,8 @@ bool Elevator::Load(User* user)
 		user->getState() != UserState::WaitingUpside)
 		return false;
 	if (_prefer_direction != 0) // 使用者方向與電梯遵循方向不符
-		if ((user->getState() == UserState::WaitingDownside && _prefer_direction < 0) ||
-			(user->getState() == UserState::WaitingUpside   && _prefer_direction > 0))
+		if ((user->getState() == UserState::WaitingDownside && _prefer_direction > 0) ||
+			(user->getState() == UserState::WaitingUpside   && _prefer_direction < 0))
 			return false;
 	if (isFull()) //滿員
 		return false;
