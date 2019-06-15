@@ -12,6 +12,7 @@ private:
 	UserState state;
 public:
 	int JoinTime;
+	bool JoinTimeSetted;
 	int id;
 	User(char nowFloor, char targetFloor, int time);
 	int getNowFloor() { return nowFloor; };

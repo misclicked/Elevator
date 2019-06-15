@@ -84,8 +84,14 @@ void ControlClass::StartSimulate(onStatusChangedCallBack osc)
 				}
 		}
 		//現時間點檢查並產生2F~12F完成工作的人，此群人將希望到1F(80%)或到2F~12F(20%)
-		for (User* h : allUsers)
+		for (User* h : allUsers) {
 			h->checkStayFinished(Time);
+			if ((h->getState() == UserState::WaitingDownside ||
+				h->getState() == UserState::WaitingUpside) && !h->JoinTimeSetted) {
+				h->JoinTime = Time;
+				h->JoinTimeSetted = true;
+			}
+		}
 
 		int NewOrderCount = ResetOrder();
 		//命令: 執行1次時間單位之電梯移動
@@ -217,7 +223,7 @@ bool ControlClass::UnLoadUserOnce(Elevator* p_elt, int time)
 		unloaded = true;
 		TotalRun++;
 		TotalWaitTime += time - user->JoinTime;
-		user->JoinTime = time;
+		user->JoinTimeSetted = false;
 	}
 	return unloaded;
 }
