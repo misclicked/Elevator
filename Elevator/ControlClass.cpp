@@ -187,7 +187,7 @@ bool ControlClass::LoadUserOnce(Elevator* p_elt)
 	for (int i = 0; i < floors[floor_id].size(); ++i)
 		if (p_elt->Load(floors[floor_id][i]))
 		{
-			floors[floor_id].erase(floors[floor_id].begin());
+			floors[floor_id].erase(floors[floor_id].begin() + i);
 			loaded = true;
 		}
 	return loaded;
